@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>lidd.at</title>
+    <meta name="description" content="chiawei's personal site">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata&display=swap" rel="stylesheet">
+    <style>
+        /*! minireset.css v0.0.6 | MIT License | github.com/jgthms/minireset.css */html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,iframe,hr,h1,h2,h3,h4,h5,h6{margin:0;padding:0}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}ul{list-style:none}button,input,select{margin:0}html{box-sizing:border-box}*,*::before,*::after{box-sizing:inherit}img,video{height:auto;max-width:100%}iframe{border:0}table{border-collapse:collapse;border-spacing:0}td,th{padding:0}
+
+        /* liddat styling */
+        html, code, kbd, samp, pre {font-family: "Inconsolata"}
+        body { margin: 2vw }
+        header, section, article { margin: 1em 0 }
+        a, a:hover, a:visited, a:active { color: #105a85 }
+        .hide { display: none }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <h1><a href="/" id="home-link">lidd.at</a></h1>
+        <h2>chiawei's personal site — just some notes, thoughts, ideas.</h2>
+    </header>
+
+    <section id="post-list">
+        <ul>
+            <li>
+                <a data-replace href="/2021-02-26-first-post.md">2021-02-26 Reset</a>
+            </li>
+        </ul>
+    </section>
+
+    <section id="article"></section>
+
+    <script src="https://cdn.jsdelivr.net/npm/snarkdown@2.0.0/dist/snarkdown.umd.js"></script>
+    <script>
+        (function() {
+            var articleElement = document.getElementById("article");
+            var postListElement = document.getElementById("post-list");
+            var homeLinkElement = document.getElementById("home-link");
+
+            function resetArticle() {
+                articleElement.innerHTML = "";
+            }
+
+            homeLinkElement.addEventListener("click", function (event) {
+                event.preventDefault();
+                postListElement.classList.remove("hide");
+                resetArticle();
+            });
+
+            document.querySelectorAll("[data-replace]").forEach(function (elm) {
+                elm.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    postListElement.classList.add("hide");
+
+                    fetch(elm.getAttribute("href"))
+                        .then(function (response) {
+                            return response.text()
+                        })
+                        .then(function (text) {
+                            var html = snarkdown(text);
+                            var articleChildElement = document.createElement("article");
+                            articleChildElement.innerHTML = html;
+                            resetArticle();
+                            articleElement.appendChild(articleChildElement);
+                        });
+
+                    return false;
+                })
+            });
+        })();
+    </script>
+</body>
+</html>
